@@ -2,19 +2,35 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var marked = require('marked');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://sys:sys@ds011228.mongolab.com:11228/chat-1');
 
-app.set('port', (process.env.PORT || 5000));
-
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+var Message = mongoose.model('message', {
+  content: String,
+  date: Date
 });
 
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', marked(msg));
+app.set('port', (process.env.PORT || 5000));
+app.set('view engine', 'html');
+app.engine('html', require('hbs').__express);
+
+app.get('/', function(req, res, next){
+  Message.find({}, function(err, message) {
+    if (err) return next(err);
+    res.render('index', {
+      message: message
+    });
   });
 });
 
-http.listen(app.get('port'), function(){
-  console.log('listening on *:5000');
+io.on('connection', function(socket){
+  io.emit('user connected', 'a user has connected');
+  socket.on('chat message', function(msg){
+    Message.create({ content: marked(msg), date: new Date }, function(err, message) {
+      if (err) return io.emit('chat message', err);
+      io.emit('chat message', message.content);
+    });
+  });
 });
+
+http.listen(app.get('port'), function(){});

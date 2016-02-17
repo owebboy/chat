@@ -1,7 +1,8 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>ochat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.1/animate.min.css">
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 1.4em "Helvetica Neue", sans-serif; }
@@ -11,10 +12,17 @@
       form button { font: 1.4em "Helvetica Neue", sans-serif; width: 9%; background: #4FBDF2; color: #fff; border-radius: 10px; border: none; padding: 10px; }
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
+      .connected { color: #ccc; font-size: .6em; text-transform: uppercase; }
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
+    <ul id="messages">
+      
+      {{#each message}}
+      <li>{{{content}}}</li>
+      {{/each}}
+      
+    </ul>
     <form action="">
       <input id="m" autocomplete="off" autofocus="autofocus" /><button>Send</button>
     </form>
@@ -28,8 +36,11 @@
         return false;
       });
       socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').html(msg));
+        $('#messages').append($('<li class="animated fadeIn">').html(msg));
       });
+      socket.on('user connected', function(msg) {
+        $('#messages').append($('<li class="connected animated fadeIn">').html(msg));
+      })
     </script>
   </body>
 </html>
