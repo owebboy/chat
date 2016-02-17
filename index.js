@@ -31,6 +31,9 @@ io.on('connection', function(socket){
       io.emit('chat message', message.content);
     });
   });
+  socket.on('disconnect', function() {
+    io.emit('user connected', 'a user has disconnected');
+  })
 });
 
 http.listen(app.get('port'), function(){});

@@ -5,12 +5,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.1/animate.min.css">
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 1.4em "Helvetica Neue", sans-serif; }
-      form { border-top: 2px solid #aaa; padding: 3px; position: fixed; bottom: 0; width: 100%; background: #fff; }
+      body { font: 1.4em "Helvetica Neue", sans-serif; padding-bottom: 100px; }
+      form { border-top: 2px solid #ccc; padding: 3px; position: fixed; bottom: 0; width: 100%; background: #fff; }
       form input { font: 1.4em "Helvetica Neue", sans-serif; border: 0; padding: 10px; width: 90%; margin-right: .5%; }
       form input:focus { outline: none }
-      form button { font: 1.4em "Helvetica Neue", sans-serif; width: 9%; background: #4FBDF2; color: #fff; border-radius: 10px; border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
+      form button { font: 1.4em "Helvetica Neue", sans-serif; width: 9%; background: #ccc; color: #fff; border-radius: 10px; border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding-bottom: 1em; }
       #messages li { padding: 5px 10px; }
       img { width: 200px; height: auto; }
       .connected { color: #ccc; font-size: .6em; text-transform: uppercase; }
@@ -30,6 +30,10 @@
     <script src="//cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.js"></script>
     <script>
+      document.addEventListener("load", scrollToBottom);
+      function scrollToBottom() {
+        window.scrollTo(0,document.body.scrollHeight);
+      }
       var socket = io();
       $('form').submit(function(){
         socket.emit('chat message', $('#m').val());
@@ -37,9 +41,11 @@
         return false;
       });
       socket.on('chat message', function(msg){
+        scrollToBottom();
         $('#messages').append($('<li class="animated fadeIn">').html(msg));
       });
       socket.on('user connected', function(msg) {
+        scrollToBottom();
         $('#messages').append($('<li class="connected animated fadeIn">').html(msg));
       })
     </script>
