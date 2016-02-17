@@ -3,6 +3,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var marked = require('marked');
 
+app.set('port', (process.env.PORT || 5000));
+
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
@@ -13,6 +15,6 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(5000, function(){
+http.listen(app.get('port'), function(){
   console.log('listening on *:5000');
 });
