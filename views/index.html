@@ -71,7 +71,7 @@
         scrollToBottom();
       });
       socket.on('user connected', function(msg) {
-        $('#messages').append($('<div class="connected animated fadeIn context">').html('a user has connected'));
+        $('#messages').append($('<div class="connected animated fadeIn content">').html('<div class="context">a user has connected</div>'));
         scrollToBottom();
       });
     </script>
