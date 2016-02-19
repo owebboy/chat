@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Enter Username</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    
+    <style>
+	html {
+		font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+		margin: 10em 30%;
+		background: #000;
+		color: #fff;
+	}
+	input::-webkit-input-placeholder {
+	  color: #fff;
+	}
+	.nickname { font-size: 4em; width: 100%; border:0; background:#000; border-bottom: 2px solid; color: #fff; }
+	.nickname:focus { outline:none; }
+	button { font-size: 2.5em; color: #fff; background: #000; border: 2px solid; }
+	</style>
+    
+</head>
+<body>
+	
+	<form action="/enter" method="post">
+		<input name="nickname" id="nickname" class="nickname" type="text" placeholder="nickname">
+		<input name="randomColor" id="randomColor" class="randomColor" type="hidden">
+		<br><br>
+		<button type="submit">Enter</button>
+	</form>
+	
+	<script src="please.js"></script>
+	<script>
+		var randomColor = Please.make_color();
+		document.querySelector('.randomColor').value = randomColor;
+	</script>
+    
+</body>
+</html>

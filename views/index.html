@@ -5,25 +5,51 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.1/animate.min.css">
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 1.4em "Helvetica Neue", sans-serif; padding-bottom: 100px; }
-      form { border-top: 2px solid #ccc; padding: 3px; position: fixed; bottom: 0; width: 100%; background: #fff; }
-      form input { font: 1.4em "Helvetica Neue", sans-serif; border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      body { font: 1.4em "Helvetica Neue", sans-serif; padding-bottom: 5em; height: 100vh; }
+      form { border-top: 2px solid #ccc; padding: 3px; bottom: 0; position: fixed; width: 100%; background: hsla(0, 0%, 100%, .5); }
+      form input { font: 1.4em "Helvetica Neue", sans-serif; border: 0; padding: 10px; width: 90%; margin-right: .5%; background: hsla(0, 0%, 100%, .5); }
       form input:focus { outline: none }
       form button { font: 1.4em "Helvetica Neue", sans-serif; width: 9%; background: #ccc; color: #fff; border-radius: 10px; border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding-bottom: 1em; }
-      #messages li { padding: 5px 10px; }
-      img { width: 200px; height: auto; }
-      .connected { color: #ccc; font-size: .6em; text-transform: uppercase; }
+      
+      
+      #messages {
+        padding-bottom: 5em;
+      }
+      
+      .context {
+        display: inline-block;
+        padding: 1em;
+        margin: 1em;
+        border-radius: 90px;
+      }
+      
+      .author {
+        padding: 0 1em;
+        margin: 0 1em;
+        color: #ccc;
+        font-size: .8em;
+      }
+      
+      img {
+        width: 100%;
+      }
+      
     </style>
   </head>
   <body>
-    <ul id="messages">
+    
+    <div id="messages">
       
       {{#each message}}
-      <li>{{{content}}}</li>
+      <div class="content">
+        <div class="context" style="background:{{color}}">
+          <span class="inverted">{{#if content}}{{{content}}}{{else}}&nbsp;{{/if}}</span>
+        </div>
+        <p class="author">{{#if author}}{{author}}{{else}}anonymous{{/if}}</p>
+      </div>
       {{/each}}
       
-    </ul>
+    </div>
     <form action="">
       <input id="m" autocomplete="off" autofocus="autofocus" /><button>Send</button>
     </form>
@@ -32,22 +58,22 @@
     <script>
       document.addEventListener("load", scrollToBottom);
       function scrollToBottom() {
-        window.scrollTo(0,document.body.scrollHeight);
+        $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
       }
       var socket = io();
       $('form').submit(function(){
-        socket.emit('chat message', $('#m').val());
+        socket.emit('chat message', { content: $('#m').val(), author: '{{user}}', color: '{{color}}' });
         $('#m').val('');
         return false;
       });
       socket.on('chat message', function(msg){
+        $('#messages').append($('<div class="animated fadeIn content">').html('<div class="context" style="background:'+ msg.color +'">' + msg.content + '</div><p class="author">'+ msg.author +'</p>'));
         scrollToBottom();
-        $('#messages').append($('<li class="animated fadeIn">').html(msg));
       });
       socket.on('user connected', function(msg) {
+        $('#messages').append($('<div class="connected animated fadeIn context">').html('{{user}} connected'));
         scrollToBottom();
-        $('#messages').append($('<li class="connected animated fadeIn">').html(msg));
-      })
+      });
     </script>
   </body>
 </html>
