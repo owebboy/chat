@@ -4,6 +4,14 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var session = require('express-session');
+var MongoDBStore = require('connect-mongodb-session')(session);
+
+var store = new MongoDBStore(
+  { 
+    uri: 'mongodb://sys:sys@ds011228.mongolab.com:11228/chat-1',
+    collection: 'mySessions'
+  });
+
 var bodyParser = require('body-parser');
 
 var marked = require('marked');
@@ -19,17 +27,13 @@ var Message = mongoose.model('message', {
   color: String
 });
 
-var sess = {
-  secret: 'keyboard cat',
-  cookie: {}
-}
-
-if (app.get('env') === 'production') {
-  app.set('trust proxy', 1) // trust first proxy
-  sess.cookie.secure = true // serve secure cookies
-}
-
-app.use(session(sess));
+app.use(session ({
+  secret: 'This is a secret',
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week 
+  },
+  store: store
+}));
 app.use(bodyParser());
 
 app.set('port', (process.env.PORT || 5000));
