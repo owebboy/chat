@@ -73,10 +73,6 @@
         return false;
       });
       socket.on('chat message', function(msg){
-        var n = new Notification('new message from ' + msg.author, {
-          body: msg.content.replace(/<[^>]*>/g, "")
-        });
-        setTimeout(n.close.bind(n), 3000);
         $('#messages').append($('<div class="animated fadeIn content">').html('<div class="context" style="background:'+ msg.color +'">' + msg.content + '</div><p class="author">'+ msg.author +'</p>'));
         scrollToBottom();
       });
