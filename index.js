@@ -27,6 +27,19 @@ var Message = mongoose.model('message', {
   color: String
 });
 
+var CronJob = require('cron').CronJob;
+var job = new CronJob({
+  cronTime: '00 30 11 * * 0-6',
+  onTick: function() {
+    Message.remove({}, function(err) {
+      if (err) return next(err);
+    })
+  },
+  start: false,
+  timeZone: 'America/New_York'
+});
+job.start();
+
 app.use(session ({
   secret: 'This is a secret',
   cookie: {
@@ -64,7 +77,7 @@ app.post('/enter', function(req, res, next) {
 });
 
 io.on('connection', function(socket) {
-  io.emit('user connected', 'a user has connected');
+  io.emit('user connected', 'user connected');
   
   socket.on('chat message', function(msg){
     var cleanHtml = sanitizeHtml(msg.content);
@@ -76,7 +89,7 @@ io.on('connection', function(socket) {
   });
   
   socket.on('disconnect', function() {
-    io.emit('user connected', 'a user has disconnected');
+    io.emit('user connected', 'user disconnected');
   });
   
 });
