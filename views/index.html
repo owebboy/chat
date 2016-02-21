@@ -95,6 +95,8 @@
       }
       var socket = io();
       $('form').submit(function(){
+        document.activeElement.blur();
+        $("input").blur();
         socket.emit('chat message', { content: $('#m').val(), author: '{{user}}', color: '{{color}}' });
         $('#m').val('');
         return false;
